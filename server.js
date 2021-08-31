@@ -36,7 +36,7 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-  req.body.id = (9/ (Math.random() * Date.now()));
+  req.body.id = Math.random();
   console.log(req.body.id)
   const note = createNewNote(req.body, notes);
   res.json(note);
