@@ -17,16 +17,36 @@ function createNewNote(body, notesArray) {
     JSON.stringify({ notes: notesArray }, null, 2)
   );
   return note;
-}
+};
+
+function deleteById(idParam, notesArray) {
+  console.log(idParam);
+   var removeIndex = notesArray.map(item => item.id).indexOf(idParam);
+   notesArray.splice(removeIndex, 1);
+  console.log(notesArray);
+  fs.writeFileSync(
+     path.join(__dirname, './db/db.json'),
+     JSON.stringify({ notes: notesArray }, null, 2)
+   );
+  return notes;
+};
 
 app.get('/api/notes', (req, res) => { 
-  res.send(notes);
+  res.json(notes);
 });
 
 app.post('/api/notes', (req, res) => {
-    const note = createNewNote(req.body, notes);
-    res.json(note);
-})
+  req.body.id = (9/ (Math.random() * Date.now()));
+  console.log(req.body.id)
+  const note = createNewNote(req.body, notes);
+  res.json(note);
+});
+
+app.delete('/api/notes/:id', (req, res) => {
+  console.log(req.params.id)
+  const note = deleteById(req.params.id, notes);
+  res.json(note);
+});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
