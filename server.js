@@ -20,14 +20,16 @@ function createNewNote(body, notesArray) {
 };
 
 function deleteById(idParam, notesArray) {
-  console.log(idParam);
-   var removeIndex = notesArray.map(item => item.id).indexOf(idParam);
-   notesArray.splice(removeIndex, 1);
   console.log(notesArray);
+  console.log(idParam.id);
+  var i = notesArray.findIndex(a => a.id === idParam.id);
+  console.log(i);
+  notes.splice( i, 1);
+  console.log(notes);
   fs.writeFileSync(
-     path.join(__dirname, './db/db.json'),
-     JSON.stringify({ notes: notesArray }, null, 2)
-   );
+      path.join(__dirname, './db/db.json'),
+      JSON.stringify({ notes: notesArray }, null, 2)
+    );
   return notes;
 };
 
@@ -36,25 +38,25 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-  req.body.id = Math.random();
+  req.body.id = Math.random().toString();
   console.log(req.body.id)
   const note = createNewNote(req.body, notes);
   res.json(note);
 });
 
 app.delete('/api/notes/:id', (req, res) => {
-  console.log(req.params.id)
-  const note = deleteById(req.params.id, notes);
+  console.log(req.params)
+  const note = deleteById(req.params, notes);
   res.json(note);
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.get('/notes', (req, res) => {
   res.sendFile(path.join(__dirname, './public/notes.html'));
 })
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}`);
